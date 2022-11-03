@@ -1,3 +1,5 @@
+package accel;
+
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -20,12 +22,12 @@ public class ConvertAccelDto {
         XSSFWorkbook workbook = new XSSFWorkbook(file);
 
         // 시트 5번째꺼를 쓰겟다!   ( 시트 0번부터 시작 )
-        XSSFSheet sheet = workbook.getSheetAt(4);
+        XSSFSheet sheet = workbook.getSheetAt(3);
 
 
 
         //  토탈로우   0부터라 -1해야댐   getPhysicalNumberOfRows가 안쓰는 행도 포함해서 숫자이상하게나옴
-        int totalRows = 696;
+        int totalRows = 659;
 //        int totalRows = sheet.getPhysicalNumberOfRows();
 
        
@@ -82,16 +84,24 @@ public class ConvertAccelDto {
 
 
             //데이터타입분기
-            if(typeVal.getStringCellValue().contains("bigint")){
-                dataType= "BigInteger";
-            }else if(typeVal.getStringCellValue().contains("DECI")){
+            if(typeVal.getStringCellValue().toLowerCase().contains("bigint") || typeVal.getStringCellValue().toLowerCase().contains("long")){
                 dataType= "long";
-            }else if(typeVal.getStringCellValue().contains("int")){
+            }else if(typeVal.getStringCellValue().toLowerCase().contains("deci") ||typeVal.getStringCellValue().toLowerCase().contains("double") ){
+                dataType= "double";
+            }else if(typeVal.getStringCellValue().toLowerCase().contains("int")){
                 dataType= "int";
-            }else if(typeVal.getStringCellValue().contains("varchar")){
+            }else if(typeVal.getStringCellValue().toLowerCase().contains("varchar") || typeVal.getStringCellValue().toLowerCase().contains("string")){
                 dataType= "String";
-            }else if(typeVal.getStringCellValue().contains("ENUM")){
+            }else if(typeVal.getStringCellValue().toLowerCase().contains("enum")){
                 dataType= "String";
+            }else if(typeVal.getStringCellValue().toLowerCase().contains("boolean")){
+                dataType= "boolean";
+            }else{
+                dataType= "exception";
+                System.out.println("데이터타입안맞음");
+                System.out.println(mulNm);
+                System.out.println(typeVal.getStringCellValue().toLowerCase());
+                return;
             }
             // 데이터 저장
             try {
